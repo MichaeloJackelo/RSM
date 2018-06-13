@@ -1,5 +1,6 @@
 from decimal import Decimal, getcontext
 from flask import Flask
+import flask_profiler
 
 
 def calculate_pi_Bailey_Borwein_Plouffe_formula(start, end):
@@ -12,9 +13,24 @@ def calculate_pi_Bailey_Borwein_Plouffe_formula(start, end):
 
 
 app = Flask(__name__)
+app.config["DEBUG"] = True
+app.config["flask_profiler"] = {
+    "enabled": app.config["DEBUG"],
+    "storage": {
+        "engine": "sqlite"
+    },
+    "basicAuth":{
+        "enabled": True,
+        "username": "admin",
+        "password": "admin"
+    }
+}
 
-@app.route('/<id>')
-def hello_world(id):
-    return calculate_pi_Bailey_Borwein_Plouffe_formula(0, 4000) + ' id = ' + str(id)
+
+flask_profiler.init_app(app)
 
 
+@app.route('/calculate_pi/<id>')
+@flask_profiler.profile()
+def calculate_pi(id):
+    return calculate_pi_Bailey_Borwein_Plouffe_formula(0, 1000) + ' id = ' + str(id)
