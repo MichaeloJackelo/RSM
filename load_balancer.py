@@ -39,7 +39,7 @@ i = RoundRobin()
 @flask_profiler.profile()
 def balance_request(id):
     conn = http.client.HTTPConnection("www.localhost:" + str(i.get_next_port()))
-    conn.request("GET", "/calculate_pi/3")
+    conn.request("GET", "/calculate_pi/" + str(id))
     r1 = conn.getresponse()
     data = r1.read()
     return data
