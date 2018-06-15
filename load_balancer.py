@@ -18,17 +18,13 @@ app.config["flask_profiler"] = {
     }
 }
 
-
-flask_profiler.init_app(app)
-
-
 class RoundRobin():
     next_elem = {}
-    li = [5001, 5002, 5003]
-    licycle = cycle(li)
+    ports = [5001, 5002, 5003]
+    ports_cycle = cycle(ports)
 
     def get_next_port(self):
-        self.next_elem = next(i.licycle)
+        self.next_elem = next(i.ports_cycle)
         return self.next_elem
 
 
@@ -36,10 +32,12 @@ i = RoundRobin()
 
 
 @app.route('/calculate_pi/<id>')
-@flask_profiler.profile()
 def balance_request(id):
     conn = http.client.HTTPConnection("www.localhost:" + str(i.get_next_port()))
     conn.request("GET", "/calculate_pi/" + str(id))
     r1 = conn.getresponse()
     data = r1.read()
     return data
+
+
+flask_profiler.init_app(app)

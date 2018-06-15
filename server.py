@@ -1,6 +1,10 @@
 from decimal import Decimal, getcontext
 from flask import Flask
 import flask_profiler
+import os
+
+
+PI_NUMBER = int(os.environ.get('PI_NUMBER')) or 1000
 
 
 def calculate_pi_Bailey_Borwein_Plouffe_formula(start, end):
@@ -27,10 +31,9 @@ app.config["flask_profiler"] = {
 }
 
 
-flask_profiler.init_app(app)
-
-
 @app.route('/calculate_pi/<id>')
-@flask_profiler.profile()
 def calculate_pi(id):
-    return calculate_pi_Bailey_Borwein_Plouffe_formula(0, 1000) + ' id = ' + str(id)
+    return calculate_pi_Bailey_Borwein_Plouffe_formula(0, PI_NUMBER) + ' id = ' + str(id)
+
+
+flask_profiler.init_app(app)
